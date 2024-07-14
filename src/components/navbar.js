@@ -28,7 +28,7 @@ const Navbar = () => {
     if (section) {
       section.scrollIntoView({ behavior: 'smooth' });
       if (isMobile) {
-        setIsOpen(false);
+        setIsOpen(true);
       }
     }
   };
@@ -57,7 +57,7 @@ const Navbar = () => {
             <img 
                   src={Logo} 
                   alt="Logo" 
-                  className="flex items-center h-12  bg-blue-700"
+                  className="flex items-center w-12 h-12  bg-blue-700"
                 />
           </motion.div>
 

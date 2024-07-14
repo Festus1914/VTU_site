@@ -38,7 +38,7 @@ const HeroSection = () => {
         <div className="container mx-auto px-6 relative z-10 pt-20">
           <div className="flex flex-col md:flex-row items-center justify-between">
             <motion.div 
-              id='/'
+              id='home'
               className="md:w-1/2 mb-10 md:mb-0 md:pr-10"
               initial={{ x: -100, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
