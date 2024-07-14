@@ -57,7 +57,7 @@ const Navbar = () => {
             <img 
                   src={Logo} 
                   alt="Logo" 
-                  className="flex items-center h-12 ml-10 bg-blue-700"
+                  className="flex items-center h-12  bg-blue-700"
                 />
           </motion.div>
 

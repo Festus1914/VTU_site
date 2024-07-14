@@ -3,11 +3,10 @@ import { motion } from 'framer-motion';
 
 const features = [
   'Airtime Purchase', 'Data Purchase', 'Cable TV Subscription', 'Electricity Bill',
-  'Exam Pin', 'Recharge Card', 'Data Card', 'Smile Topup',
+  'Exam Pin', 'Recharge Card', 'Data Card', 
   'Alpha Topup', 'Airtime Swap', 'Referral System', 'NIN Verification',
-  'BVN Verification', 'Bank Withdrawal', 'Contact List', 'Finger Print Login',
-  'Payment Gateway', 'API Integration', 'Standalone', 'Affiliate',
-  'Android App', 'iOS App', 'Web View App', 'Native App'
+  'BVN Verification', 'Bank Withdrawal', 'Contact List', 
+  'Payment Gateway', 'API Integration',  
 ];
 
 const FeatureCard = ({ feature }) => (
