@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaBars, FaTimes } from 'react-icons/fa';
 import useScrollPosition from './useScrollPosition';
+import Logo from '../Assets/dayemdot_logo.jpg';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -11,8 +12,8 @@ const Navbar = () => {
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-      if (window.innerWidth >= 768) {
+      setIsMobile(window.innerWidth < 1024);
+      if (window.innerWidth >= 1024) {
         setIsOpen(false);
       }
     };
@@ -39,25 +40,29 @@ const Navbar = () => {
 
   return (
     <motion.nav
-      className={`fixed w-full z-50 transition-all duration-300 bg-white shadow-lg`}
+      className={`fixed w-full z-50 transition-all duration-300 ${
+        scrollPosition > 50 ? 'bg-white/80 backdrop-blur-md' : 'bg-transparent'
+      }`}
       initial="hidden"
       animate="visible"
       variants={navbarVariants}
       transition={{ duration: 0.3 }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex justify-between items-center h-20">
           <motion.div
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            <a href="#" className="flex items-center">
-              <span className="font-bold text-2xl text-gray-900">YourBrand</span>
-            </a>
+            <img 
+                  src={Logo} 
+                  alt="Logo" 
+                  className="flex items-center h-12 ml-10 bg-blue-700"
+                />
           </motion.div>
 
           {/* Desktop menu */}
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden lg:flex items-center space-x-8 mr-10 font-bold text-3xl">
             {navItems.map((item, index) => (
               <motion.div
                 key={item}
@@ -68,8 +73,9 @@ const Navbar = () => {
               >
                 <motion.button
                   onClick={() => handleNavClick(item.toLowerCase())}
-                  className={`py-2 px-3 text-sm font-medium rounded-md transition duration-300 
-                    text-gray-900 hover:bg-gray-100
+                  className={`py-2 px-4 text-lg font-bold rounded-lg transition duration-300 
+                    ${scrollPosition > 50 ? 'text-gray-800' : 'text-white'} 
+                    hover:bg-blue-500 hover:text-white
                     ${item === 'Contact' ? 'bg-blue-500 text-white hover:bg-blue-600' : ''}`}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -86,10 +92,14 @@ const Navbar = () => {
           </div>
 
           {/* Mobile menu button */}
-          <div className="md:hidden flex items-center">
-            <button
+          <div className="lg:hidden flex items-center">
+            <motion.button
               onClick={() => setIsOpen(!isOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
+              className={`inline-flex items-center justify-center p-2 rounded-full ${
+                scrollPosition > 50 ? 'text-gray-800' : 'text-white'
+              } hover:bg-blue-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500`}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
               aria-expanded="false"
             >
               <span className="sr-only">Open main menu</span>
@@ -98,7 +108,7 @@ const Navbar = () => {
               ) : (
                 <FaBars className="block h-6 w-6" aria-hidden="true" />
               )}
-            </button>
+            </motion.button>
           </div>
         </div>
       </div>
@@ -107,7 +117,7 @@ const Navbar = () => {
       <AnimatePresence>
         {isOpen && isMobile && (
           <motion.div
-            className="md:hidden bg-white"
+            className="lg:hidden bg-white/90 backdrop-blur-md"
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
@@ -118,12 +128,14 @@ const Navbar = () => {
                 <motion.button
                   key={item}
                   onClick={() => handleNavClick(item.toLowerCase())}
-                  className={`block px-3 py-2 rounded-md text-base font-medium 
-                    text-gray-900 hover:bg-gray-100
+                  className={`block w-full px-3 py-2 rounded-full text-lg font-bold 
+                    text-gray-900 hover:bg-blue-500 hover:text-white
                     ${item === 'Contact' ? 'bg-blue-500 text-white hover:bg-blue-600' : ''}`}
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.3, delay: index * 0.1 }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                 >
                   {item}
                 </motion.button>
