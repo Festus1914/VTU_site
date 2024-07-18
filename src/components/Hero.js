@@ -50,7 +50,7 @@ const HeroSection = () => {
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.5, duration: 0.8 }}
               >
-                Revolutionize Your <span className="text-yellow-300">Payments</span>
+                Revolutionize Your <span className="text-orange-400">Payments</span>
               </motion.h1>
               <motion.p 
                 className="text-xl mb-8 text-blue-100 max-w-lg"
