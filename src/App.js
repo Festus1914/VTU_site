@@ -1,3 +1,4 @@
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import About from './components/About';
 import ExploreSection from './components/Explore';
 import FAQ from './components/Faq';
@@ -7,22 +8,33 @@ import HeroSection from './components/Hero';
 import Navbar from './components/navbar';  
 import ServicesSection from './components/Services';
 import TestimonialCarousel from './components/Testimonies';
+import Login from './components/Auth/Login';
+import Signup from './components/Auth/Signup';
+import Forgot from './components/Auth/Forgot';
 
 function App() {
   return (
-    <div className="App">
-      <Navbar />
-      <HeroSection />
-      <About />
-      <FeaturesSection />
-      <ServicesSection />
-      <ExploreSection />
-      <TestimonialCarousel />
-      <FAQ />
-      <Footer />
-      
-    </div>
+    <Router>
+      <div className="App">
+         <Routes>
+          <Route path="/" element={<>
+            <Navbar />
+            <HeroSection />
+            <About />
+            <FeaturesSection />
+            <ServicesSection />
+            <ExploreSection />
+            <TestimonialCarousel />
+            <FAQ />
+            <Footer />
+          </>} />
+          <Route path="/login" element={<Login />} />
+         <Route path="/signup" element={<Signup />} />
+         <Route path="/forgot" element={<Forgot />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
-export default App
+export default App;

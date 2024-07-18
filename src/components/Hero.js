@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom'; // Import the Link component
 import HeroImage from '../Assets/mobile1.jpg';
 import Navbar from '../components/navbar';
 
@@ -66,13 +67,15 @@ const HeroSection = () => {
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.9, duration: 0.8 }}
               >
-                <motion.button 
-                  className="bg-white text-blue-600 font-bold py-3 px-8 rounded-full hover:bg-yellow-300 hover:text-blue-700 transition duration-300 shadow-lg transform hover:scale-105"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  Get Started
-                </motion.button>
+                <Link to="/Login"> {/* Add the Link component here */}
+                  <motion.button 
+                    className="bg-white text-blue-600 font-bold py-3 px-8 rounded-full hover:bg-yellow-300 hover:text-blue-700 transition duration-300 shadow-lg transform hover:scale-105"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    Get Started
+                  </motion.button>
+                </Link>
                 <motion.button 
                   className="border-2 border-white text-white font-bold py-3 px-8 rounded-full hover:bg-white hover:text-blue-600 transition duration-300 shadow-lg transform hover:scale-105"
                   whileHover={{ scale: 1.05 }}
