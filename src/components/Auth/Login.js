@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { FaMobileAlt, FaEnvelope, FaLock } from 'react-icons/fa';
 import { auth } from './firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
+import Modal from './Modals/SignupModal';
+import { AnimatePresence } from 'framer-motion';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -16,8 +18,16 @@ const LoginPage = () => {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // Successfully signed in
-        setMessageType('success');
-        setMessage('Logged in successfully.');
+        const user = userCredential.user;
+        if (user.emailVerified) {
+          setMessageType('success');
+          setMessage('Logged in successfully.');
+          // Redirect to dashboard or home page
+        } else {
+          setMessageType('error');
+          setMessage('Please verify your email before logging in.');
+          auth.signOut(); // Sign out the user
+        }
       })
       .catch((error) => {
         const errorMessage = error.message;
@@ -26,7 +36,7 @@ const LoginPage = () => {
       });
   };
 
-  const closeMessage = () => {
+  const closeModal = () => {
     setMessage(null);
     setMessageType(null);
   };
@@ -40,12 +50,6 @@ const LoginPage = () => {
             <h1 className="mt-4 text-2xl font-bold text-gray-800">VTU Login</h1>
             <p className="mt-2 text-sm text-gray-600">Access Your Account</p>
           </div>
-          {message && (
-            <div className={`p-4 mb-4 text-sm rounded-lg ${messageType === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-              {message}
-              <button onClick={closeMessage} className="ml-4 text-lg font-bold">&times;</button>
-            </div>
-          )}
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <div className="relative">
@@ -65,7 +69,7 @@ const LoginPage = () => {
                 <FaLock className="absolute top-3 left-3 text-gray-400" />
                 <input
                   type="password"
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700  focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-transparent"
                   placeholder="Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -94,6 +98,16 @@ const LoginPage = () => {
           </p>
         </div>
       </div>
+      <AnimatePresence>
+        {message && (
+          <Modal
+            showModal={!!message}
+            closeModal={closeModal}
+            message={message}
+            messageType={messageType}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 };

@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FaMobileAlt, FaEnvelope } from 'react-icons/fa';
-import { auth } from './firebase'; // Import the auth object from your firebase.js file
+import { auth } from './firebase';
 import { sendPasswordResetEmail } from 'firebase/auth';
+import Modal from '../Auth/Modals/Forgot.Modal';
+import { AnimatePresence } from 'framer-motion';
 
 const ForgotPasswordPage = () => {
   const [email, setEmail] = useState('');
@@ -25,7 +27,7 @@ const ForgotPasswordPage = () => {
       });
   };
 
-  const closeMessage = () => {
+  const closeModal = () => {
     setMessage(null);
     setMessageType(null);
   };
@@ -40,12 +42,6 @@ const ForgotPasswordPage = () => {
             <h1 className="mt-4 text-2xl font-bold text-gray-800">Forgot Password</h1>
             <p className="mt-2 text-sm text-gray-600">Enter your email to reset your password</p>
           </div>
-          {message && (
-            <div className={`p-4 mb-4 text-sm rounded-lg ${messageType === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-              {message}
-              <button onClick={closeMessage} className="ml-4 text-lg font-bold">&times;</button>
-            </div>
-          )}
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="relative">
               <FaEnvelope className="absolute top-3 left-3 text-gray-400" />
@@ -72,6 +68,16 @@ const ForgotPasswordPage = () => {
           </p>
         </div>
       </div>
+      <AnimatePresence>
+        {message && (
+          <Modal
+            showModal={!!message}
+            closeModal={closeModal}
+            message={message}
+            messageType={messageType}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 };

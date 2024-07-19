@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FaMobileAlt, FaUser, FaPhone, FaEnvelope, FaLock, FaKey } from 'react-icons/fa';
 import { auth } from './firebase';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
+import Modal from '../Auth/Modals/SignupModal';
+import { AnimatePresence } from 'framer-motion';
 
 const SignupPage = () => {
   const [firstName, setFirstName] = useState('');
@@ -26,8 +28,17 @@ const SignupPage = () => {
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // Successfully created new user
-        setMessageType('success');
-        setMessage('Account created successfully.');
+        const user = userCredential.user;
+        sendEmailVerification(user)
+          .then(() => {
+            setMessageType('success');
+            setMessage('Account created successfully. Please verify your email.');
+          })
+          .catch((error) => {
+            const errorMessage = error.message;
+            setMessageType('error');
+            setMessage(`Account created, but failed to send verification email. ${errorMessage}`);
+          });
       })
       .catch((error) => {
         const errorMessage = error.message;
@@ -36,7 +47,7 @@ const SignupPage = () => {
       });
   };
 
-  const closeMessage = () => {
+  const closeModal = () => {
     setMessage(null);
     setMessageType(null);
   };
@@ -51,12 +62,6 @@ const SignupPage = () => {
             <h1 className="mt-4 text-2xl font-bold text-gray-800">Sign Up</h1>
             <p className="mt-2 text-sm text-gray-600">Create Your Account</p>
           </div>
-          {message && (
-            <div className={`p-4 mb-4 text-sm rounded-lg ${messageType === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-              {message}
-              <button onClick={closeMessage} className="ml-4 text-lg font-bold">&times;</button>
-            </div>
-          )}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="relative">
               <FaUser className="absolute top-3 left-3 text-gray-400" />
@@ -149,6 +154,16 @@ const SignupPage = () => {
           </p>
         </div>
       </div>
+      <AnimatePresence>
+        {message && (
+          <Modal
+            showModal={!!message}
+            closeModal={closeModal}
+            message={message}
+            messageType={messageType}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 };
