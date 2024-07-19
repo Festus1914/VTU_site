@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FaMobileAlt, FaUser, FaBriefcase, FaPhone, FaEnvelope, FaLock } from 'react-icons/fa';
+import { FaMobileAlt, FaUser, FaPhone, FaEnvelope, FaLock, FaKey } from 'react-icons/fa';
 
 const SignupPage = () => {
-  const [fullName, setFullName] = useState('');
-  const [businessName, setBusinessName] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [pin, setPin] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -25,27 +27,29 @@ const SignupPage = () => {
             <p className="mt-2 text-sm text-gray-600">Create Your Account</p>
           </div>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="relative">
-              <FaUser className="absolute top-3 left-3 text-gray-400" />
-              <input
-                type="text"
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="Full Name"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                required
-              />
-            </div>
-            <div className="relative">
-              <FaBriefcase className="absolute top-3 left-3 text-gray-400" />
-              <input
-                type="text"
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="Business Name"
-                value={businessName}
-                onChange={(e) => setBusinessName(e.target.value)}
-                required
-              />
+            <div className="grid grid-cols-2 gap-4">
+              <div className="relative">
+                <FaUser className="absolute top-3 left-3 text-gray-400" />
+                <input
+                  type="text"
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="First Name"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="relative">
+                <FaUser className="absolute top-3 left-3 text-gray-400" />
+                <input
+                  type="text"
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Last Name"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  required
+                />
+              </div>
             </div>
             <div className="relative">
               <FaPhone className="absolute top-3 left-3 text-gray-400" />
@@ -77,6 +81,28 @@ const SignupPage = () => {
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+            <div className="relative">
+              <FaLock className="absolute top-3 left-3 text-gray-400" />
+              <input
+                type="password"
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Confirm Password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+              />
+            </div>
+            <div className="relative">
+              <FaKey className="absolute top-3 left-3 text-gray-400" />
+              <input
+                type="text"
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="PIN"
+                value={pin}
+                onChange={(e) => setPin(e.target.value)}
                 required
               />
             </div>
