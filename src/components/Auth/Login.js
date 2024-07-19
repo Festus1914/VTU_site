@@ -1,14 +1,34 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FaMobileAlt, FaEnvelope, FaLock } from 'react-icons/fa';
+import { auth } from './firebase';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [message, setMessage] = useState(null);
+  const [messageType, setMessageType] = useState(null);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle login logic here
+    
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Successfully signed in
+        setMessageType('success');
+        setMessage('Logged in successfully.');
+      })
+      .catch((error) => {
+        const errorMessage = error.message;
+        setMessageType('error');
+        setMessage(errorMessage);
+      });
+  };
+
+  const closeMessage = () => {
+    setMessage(null);
+    setMessageType(null);
   };
 
   return (
@@ -20,6 +40,12 @@ const LoginPage = () => {
             <h1 className="mt-4 text-2xl font-bold text-gray-800">VTU Login</h1>
             <p className="mt-2 text-sm text-gray-600">Access Your Account</p>
           </div>
+          {message && (
+            <div className={`p-4 mb-4 text-sm rounded-lg ${messageType === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+              {message}
+              <button onClick={closeMessage} className="ml-4 text-lg font-bold">&times;</button>
+            </div>
+          )}
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <div className="relative">

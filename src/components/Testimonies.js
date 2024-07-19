@@ -36,7 +36,7 @@ const TestimonialCarousel = () => {
       nextSlide();
     }, 4000); // Slide every 4 seconds
 
-    return () => clearInterval(autoSlide); // Clear interval on component unmount
+    return () => clearInterval(autoSlide); 
   }, [current]);
 
   useEffect(() => {
