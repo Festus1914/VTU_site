@@ -11,6 +11,7 @@ import TestimonialCarousel from './components/Testimonies';
 import Login from './components/Auth/Login';
 import Signup from './components/Auth/Signup';
 import Forgot from './components/Auth/Forgot';
+import Dashboard from './Dashboard/Dashboard';
 
 function App() {
   return (
@@ -31,6 +32,8 @@ function App() {
           <Route path="/login" element={<Login />} />
          <Route path="/signup" element={<Signup />} />
          <Route path="/forgot" element={<Forgot />} />
+         <Route path="/dashboard" element={<Dashboard />} />
+
         </Routes>
       </div>
     </Router>

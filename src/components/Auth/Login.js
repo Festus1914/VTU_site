@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FaMobileAlt, FaEnvelope, FaLock } from 'react-icons/fa';
 import { auth } from './firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
@@ -11,6 +11,7 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState(null);
   const [messageType, setMessageType] = useState(null);
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -22,11 +23,14 @@ const LoginPage = () => {
         if (user.emailVerified) {
           setMessageType('success');
           setMessage('Logged in successfully.');
-          // Redirect to dashboard or home page
+          // Delay the redirection to show the success message
+          setTimeout(() => {
+            navigate('/dashboard');
+          }, 3000); // 3 seconds delay
         } else {
           setMessageType('error');
           setMessage('Please verify your email before logging in.');
-          auth.signOut(); // Sign out the user
+          auth.signOut();
         }
       })
       .catch((error) => {
@@ -87,7 +91,7 @@ const LoginPage = () => {
             <button
               type="submit"
               className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 transition duration-300"
-            >
+            > 
               Sign In
             </button>
           </form>
