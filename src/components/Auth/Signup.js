@@ -3,8 +3,12 @@ import { Link } from 'react-router-dom';
 import { FaMobileAlt, FaUser, FaPhone, FaEnvelope, FaLock, FaKey } from 'react-icons/fa';
 import { auth } from './firebase';
 import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
+import { getFirestore, doc, setDoc } from 'firebase/firestore';
 import Modal from '../Auth/Modals/SignupModal';
 import { AnimatePresence } from 'framer-motion';
+
+// Initialize Firestore
+const firestore = getFirestore();
 
 const SignupPage = () => {
   const [firstName, setFirstName] = useState('');
@@ -26,9 +30,18 @@ const SignupPage = () => {
     }
 
     createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        // Successfully created new user
+      .then(async (userCredential) => {
         const user = userCredential.user;
+
+        // Store user info in Firestore
+        await setDoc(doc(firestore, 'users', user.uid), {
+          firstName,
+          lastName,
+          phoneNumber,
+          email,
+          pin,
+        });
+
         sendEmailVerification(user)
           .then(() => {
             setMessageType('success');

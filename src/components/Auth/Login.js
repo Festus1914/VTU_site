@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaMobileAlt, FaEnvelope, FaLock } from 'react-icons/fa';
-import { auth } from './firebase';
+import { auth, db } from './firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
 import Modal from './Modals/SignupModal';
 import { AnimatePresence } from 'framer-motion';
 
@@ -17,10 +18,20 @@ const LoginPage = () => {
     e.preventDefault();
     
     signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
+      .then(async (userCredential) => {
         // Successfully signed in
         const user = userCredential.user;
         if (user.emailVerified) {
+          // Retrieve user data from Firestore
+          const userDoc = await getDoc(doc(db, 'users', user.uid));
+          if (userDoc.exists()) {
+            const userData = userDoc.data();
+            // You can use userData as needed, e.g., setting state or passing it to other components
+            console.log('User Data:', userData);
+          } else {
+            console.log('No such document!');
+          }
+
           setMessageType('success');
           setMessage('Logged in successfully.');
           // Delay the redirection to show the success message

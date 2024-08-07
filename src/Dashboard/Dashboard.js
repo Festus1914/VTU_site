@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Phone, Wifi, Tv, Zap, GraduationCap, BarChart2, Users, Plus, PhoneCall, AlertCircle, Eye, EyeOff, Home, User, History, MoreHorizontal, Menu, X } from 'lucide-react';
 import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Line } from 'recharts';
+import { auth } from '../components/Auth/firebase'; 
+import { getFirestore, doc, getDoc } from 'firebase/firestore';
+
+// Initialize Firestore
+const firestore = getFirestore();
 
 // Custom Component Definitions
 const Card = ({ children, className, ...props }) => (
@@ -92,7 +97,7 @@ const Sidebar = ({ onNavigate, isOpen, toggleSidebar }) => {
 };
 
 const Dashboard = () => {
-  const [userName, setUserName] = useState("Oladotun");
+  const [userName, setUserName] = useState("");
   const [walletBalance, setWalletBalance] = useState(5000);
   const [bonusBalance, setBonusBalance] = useState(200);
   const [notifications, setNotifications] = useState(3);
@@ -102,6 +107,28 @@ const Dashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
+    // Fetch user data from Firestore
+    const fetchUserData = async () => {
+      try {
+        const userDocRef = doc(firestore, "users", auth.currentUser.uid); // Assuming user ID is the document ID
+        const userDoc = await getDoc(userDocRef);
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          setUserName(userData.firstName); // Update the state with the fetched first name
+          // Update other states as necessary
+          setWalletBalance(userData.walletBalance || walletBalance);
+          setBonusBalance(userData.bonusBalance || bonusBalance);
+          setNotifications(userData.notifications || notifications);
+        } else {
+          console.log("No such document!");
+        }
+      } catch (error) {
+        console.error("Error fetching user data: ", error);
+      }
+    };
+
+    fetchUserData();
+
     // Simulating fetching transaction history
     const mockHistory = [
       { date: '2024-08-01', amount: 5000 },
@@ -149,103 +176,67 @@ const Dashboard = () => {
         <header className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6 rounded-b-3xl shadow-lg">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center space-x-4">
-              <Avatar fallback={userName[0]} />
+              <Avatar fallback={userName.charAt(0)} />
               <div>
-                <h1 className="text-xl font-bold">Hi, {userName}</h1>
-                <p className="text-sm opacity-80">Premium Subscriber</p>
+                <h1 className="text-2xl font-bold">Welcome, {userName}!</h1>
+                <p className="text-sm">Manage your account and explore the services.</p>
               </div>
             </div>
-            <div className="text-right relative">
-              <button className="p-2 bg-white bg-opacity-20 rounded-full">
-                <AlertCircle className="h-6 w-6" />
-                <NotificationBadge count={notifications} />
+            <div className="flex space-x-4 mt-4 md:mt-0">
+              <button className="relative">
+                <Phone size={20} />
+                {notifications > 0 && <NotificationBadge count={notifications} />}
               </button>
-            </div>
-          </div>
-          <div className="flex flex-col md:flex-row md:space-x-6 mt-6">
-            <div className="bg-white bg-opacity-20 py-2 px-4 rounded-lg">
-              <p className="text-sm opacity-80">Wallet Balance</p>
-              <div className="flex items-center space-x-2">
-                {showBalance ? (
-                  <span className="text-2xl font-bold">₦{walletBalance.toLocaleString()}</span>
-                ) : (
-                  <span className="text-2xl font-bold">****</span>
-                )}
-                <button onClick={toggleBalanceVisibility} className="text-blue-400">
-                  {showBalance ? <EyeOff size={18} /> : <Eye size={18} />}
-                </button>
-              </div>
-            </div>
-            <div className="bg-white bg-opacity-20 py-2 px-4 rounded-lg mt-4 md:mt-0">
-              <p className="text-sm opacity-80">Bonus Balance</p>
-              <span className="text-2xl font-bold">₦{bonusBalance.toLocaleString()}</span>
+              <button className="relative">
+                <AlertCircle size={20} />
+                {notifications > 0 && <NotificationBadge count={notifications} />}
+              </button>
             </div>
           </div>
         </header>
 
         <main className="mt-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <DashboardItem
-              icon={Phone}
-              label="Phone Recharge"
-              color="bg-blue-500"
-              onClick={() => handleServiceClick('Phone Recharge')}
-              amount={1234}
-            />
-            <DashboardItem
-              icon={Wifi}
-              label="Internet Data"
-              color="bg-green-500"
-              onClick={() => handleServiceClick('Internet Data')}
-              amount={5678}
-            />
-            <DashboardItem
-              icon={Tv}
-              label="TV Subscription"
-              color="bg-red-500"
-              onClick={() => handleServiceClick('TV Subscription')}
-              amount={9101}
-            />
-            <DashboardItem
-              icon={Zap}
-              label="Electricity Bill"
-              color="bg-yellow-500"
-              onClick={() => handleServiceClick('Electricity Bill')}
-              amount={1121}
-            />
-            <DashboardItem
-              icon={GraduationCap}
-              label="Education"
-              color="bg-purple-500"
-              onClick={() => handleServiceClick('Education')}
-              amount={3141}
-            />
-            <DashboardItem
-              icon={BarChart2}
-              label="Statistics"
-              color="bg-gray-500"
-              onClick={() => handleServiceClick('Statistics')}
-            />
-            <DashboardItem
-              icon={Users}
-              label="Community"
-              color="bg-teal-500"
-              onClick={() => handleServiceClick('Community')}
-            />
+          <div className="flex justify-between items-center">
+            <h2 className="text-xl font-semibold text-gray-800">Your Balance</h2>
+            <button onClick={toggleBalanceVisibility} className="text-sm font-medium text-gray-600 hover:text-gray-800 flex items-center space-x-1">
+              {showBalance ? <EyeOff size={16} /> : <Eye size={16} />}
+              <span>{showBalance ? 'Hide' : 'Show'} Balance</span>
+            </button>
+          </div>
+          <Card className="p-6 mt-4">
+            <div className="flex justify-between items-center">
+              <div>
+                <h3 className="text-lg font-semibold text-gray-700">Wallet Balance</h3>
+                <p className="text-2xl font-bold text-gray-900">{showBalance ? `₦${walletBalance.toLocaleString()}` : '••••••'}</p>
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-700">Bonus Balance</h3>
+                <p className="text-2xl font-bold text-gray-900">{showBalance ? `₦${bonusBalance.toLocaleString()}` : '••••••'}</p>
+              </div>
+            </div>
+          </Card>
+
+          <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <DashboardItem icon={Wifi} label="Data Subscription" color="bg-blue-500" onClick={() => handleServiceClick('Data Subscription')} />
+            <DashboardItem icon={Phone} label="Airtime Top-up" color="bg-green-500" onClick={() => handleServiceClick('Airtime Top-up')} />
+            <DashboardItem icon={Tv} label="TV Subscription" color="bg-orange-500" onClick={() => handleServiceClick('TV Subscription')} />
+            <DashboardItem icon={Zap} label="Electricity Bill" color="bg-yellow-500" onClick={() => handleServiceClick('Electricity Bill')} />
+            <DashboardItem icon={GraduationCap} label="Exam Results" color="bg-indigo-500" onClick={() => handleServiceClick('Exam Results')} />
+            <DashboardItem icon={BarChart2} label="Wallet History" color="bg-pink-500" onClick={() => handleServiceClick('Wallet History')} />
           </div>
 
-          <section className="mt-12 bg-white rounded-lg shadow-lg p-6">
-            <h2 className="text-xl font-semibold mb-4">Transaction History</h2>
-            <ResponsiveContainer width="100%" height={400}>
+          <div className="mt-8">
+            <h2 className="text-xl font-semibold text-gray-800">Transaction History</h2>
+            <ResponsiveContainer width="100%" height={300}>
               <LineChart data={transactionHistory}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="date" />
                 <YAxis />
                 <Tooltip />
-                <Line type="monotone" dataKey="amount" stroke="#8884d8" />
+                <Line type="monotone" dataKey="amount" stroke="#8884d8" activeDot={{ r: 8 }} />
               </LineChart>
             </ResponsiveContainer>
-          </section>
+          </div>
         </main>
       </div>
     </div>
