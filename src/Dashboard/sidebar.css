@@ -1,0 +1,34 @@
+/* CSS for sidebar */
+.sidebar-toggle-button {
+    top: 1rem;
+    left: 1rem;
+    z-index: 50;
+  }
+  
+  @media (min-width: 768px) {
+    .sidebar-toggle-button {
+      display: none;
+    }
+  
+    .sidebar {
+      position: relative;
+      transform: none;
+    }
+  
+    .content {
+      padding-left: 16rem; /* Adjust to the width of the sidebar */
+    }
+  }
+  
+  /* Hide sidebar by default on mobile view */
+  @media (max-width: 767px) {
+    .sidebar {
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+    }
+  
+    .sidebar-open .sidebar {
+      transform: translateX(0);
+    }
+  }
+  

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Phone, Wifi, Tv, Zap, GraduationCap, BarChart2, Users, Plus, PhoneCall, AlertCircle, Eye, EyeOff } from 'lucide-react';
+import { Phone, Wifi, Tv, Zap, GraduationCap, BarChart2, Users, Plus, PhoneCall, AlertCircle, Eye, EyeOff, Home, User, History, MoreHorizontal, Menu, X } from 'lucide-react';
 import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Line } from 'recharts';
 
 // Custom Component Definitions
@@ -57,6 +57,40 @@ const NotificationBadge = ({ count }) => (
   </div>
 );
 
+const Sidebar = ({ onNavigate, isOpen, toggleSidebar }) => {
+  return (
+    <div className={`fixed top-0 left-0 w-64 bg-white shadow-lg min-h-screen p-6 z-40 transform transition-transform duration-300 ${isOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 md:relative md:w-10 md:shadow-none`}>
+      <h2 className="text-xl font-semibold mb-6">Navigation</h2>
+      <ul className="space-y-4">
+        <li>
+          <button onClick={() => { onNavigate('home'); toggleSidebar(); }} className="flex items-center space-x-2 text-gray-800 hover:bg-gray-100 p-2 rounded-md">
+            <Home size={20} />
+            <span>Home</span>
+          </button>
+        </li>
+        <li>
+          <button onClick={() => { onNavigate('profile'); toggleSidebar(); }} className="flex items-center space-x-2 text-gray-800 hover:bg-gray-100 p-2 rounded-md">
+            <User size={20} />
+            <span>Profile</span>
+          </button>
+        </li>
+        <li>
+          <button onClick={() => { onNavigate('history'); toggleSidebar(); }} className="flex items-center space-x-2 text-gray-800 hover:bg-gray-100 p-2 rounded-md">
+            <History size={20} />
+            <span>History</span>
+          </button>
+        </li>
+        <li>
+          <button onClick={() => { onNavigate('more'); toggleSidebar(); }} className="flex items-center space-x-2 text-gray-800 hover:bg-gray-100 p-2 rounded-md">
+            <MoreHorizontal size={20} />
+            <span>More</span>
+          </button>
+        </li>
+      </ul>
+    </div>
+  );
+};
+
 const Dashboard = () => {
   const [userName, setUserName] = useState("Oladotun");
   const [walletBalance, setWalletBalance] = useState(5000);
@@ -64,6 +98,8 @@ const Dashboard = () => {
   const [notifications, setNotifications] = useState(3);
   const [transactionHistory, setTransactionHistory] = useState([]);
   const [showBalance, setShowBalance] = useState(false);
+  const [activeSection, setActiveSection] = useState('home');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
     // Simulating fetching transaction history
@@ -78,6 +114,11 @@ const Dashboard = () => {
     setTransactionHistory(mockHistory);
   }, []);
 
+  const handleNavigate = (section) => {
+    setActiveSection(section);
+    console.log(`${section} section clicked`);
+  };
+
   const handleServiceClick = (service) => {
     console.log(`${service} clicked`);
   };
@@ -86,93 +127,127 @@ const Dashboard = () => {
     setShowBalance(!showBalance);
   };
 
-  return (
-    <div className="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen pb-20">
-      <header className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6 rounded-b-3xl shadow-lg">
-        <div className="flex justify-between items-center">
-          <div className="flex items-center space-x-4">
-            <Avatar fallback={userName[0]} />
-            <div>
-              <h1 className="text-xl font-bold">Hi, {userName}</h1>
-              <p className="text-sm opacity-80">Premium Subscriber</p>
-            </div>
-          </div>
-          <div className="text-right relative">
-            <button className="p-2 bg-white bg-opacity-20 rounded-full">
-              <AlertCircle className="h-6 w-6" />
-              <NotificationBadge count={notifications} />
-            </button>
-          </div>
-        </div>
-        <div className="mt-6 flex justify-between items-end">
-          <div>
-            <p className="text-sm opacity-80">Wallet Balance</p>
-            <div className="flex items-center space-x-2 cursor-pointer" onClick={toggleBalanceVisibility}>
-              <p className={`text-3xl font-bold ${showBalance ? '' :'p-2 rounded'}`}>
-                {showBalance ? `₦${walletBalance.toLocaleString()}` : '*****'}
-              </p>
-              {showBalance ? <EyeOff className="text-white" /> : <Eye className="text-white" />}
-            </div>
-          </div>
-        </div>
-        <div className="mt-4">
-          <p className="text-xs opacity-80">Bonus: ₦{bonusBalance.toLocaleString()}</p>
-          <Progress value={bonusBalance / 1000 * 100} className="h-1 mt-1" />
-        </div>
-      </header>
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+    document.body.classList.toggle('sidebar-open', !isSidebarOpen);
+  };
 
-      <main className="p-6 max-w-4xl mx-auto">
-        <Card className="mb-6">
-          <CardContent>
-            <h2 className="text-lg font-semibold mb-4">Balance Trend</h2>
-            <ResponsiveContainer width="100%" height={200}>
+  return (
+    <div className="flex flex-col md:flex-row">
+      {/* Mobile Sidebar Toggle Button */}
+      <button 
+        onClick={toggleSidebar} 
+        className="md:hidden p-2 fixed top-4 left-4 z-50 bg-white shadow-lg rounded-full">
+        {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
+      </button>
+
+      {/* Sidebar */}
+      <Sidebar onNavigate={handleNavigate} isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+
+      {/* Dashboard Content */}
+      <div className="flex-1 bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen pb-20 p-6 md:ml-64">
+        <header className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6 rounded-b-3xl shadow-lg">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <div className="flex items-center space-x-4">
+              <Avatar fallback={userName[0]} />
+              <div>
+                <h1 className="text-xl font-bold">Hi, {userName}</h1>
+                <p className="text-sm opacity-80">Premium Subscriber</p>
+              </div>
+            </div>
+            <div className="text-right relative">
+              <button className="p-2 bg-white bg-opacity-20 rounded-full">
+                <AlertCircle className="h-6 w-6" />
+                <NotificationBadge count={notifications} />
+              </button>
+            </div>
+          </div>
+          <div className="flex flex-col md:flex-row md:space-x-6 mt-6">
+            <div className="bg-white bg-opacity-20 py-2 px-4 rounded-lg">
+              <p className="text-sm opacity-80">Wallet Balance</p>
+              <div className="flex items-center space-x-2">
+                {showBalance ? (
+                  <span className="text-2xl font-bold">₦{walletBalance.toLocaleString()}</span>
+                ) : (
+                  <span className="text-2xl font-bold">****</span>
+                )}
+                <button onClick={toggleBalanceVisibility} className="text-blue-400">
+                  {showBalance ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
+            </div>
+            <div className="bg-white bg-opacity-20 py-2 px-4 rounded-lg mt-4 md:mt-0">
+              <p className="text-sm opacity-80">Bonus Balance</p>
+              <span className="text-2xl font-bold">₦{bonusBalance.toLocaleString()}</span>
+            </div>
+          </div>
+        </header>
+
+        <main className="mt-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <DashboardItem
+              icon={Phone}
+              label="Phone Recharge"
+              color="bg-blue-500"
+              onClick={() => handleServiceClick('Phone Recharge')}
+              amount={1234}
+            />
+            <DashboardItem
+              icon={Wifi}
+              label="Internet Data"
+              color="bg-green-500"
+              onClick={() => handleServiceClick('Internet Data')}
+              amount={5678}
+            />
+            <DashboardItem
+              icon={Tv}
+              label="TV Subscription"
+              color="bg-red-500"
+              onClick={() => handleServiceClick('TV Subscription')}
+              amount={9101}
+            />
+            <DashboardItem
+              icon={Zap}
+              label="Electricity Bill"
+              color="bg-yellow-500"
+              onClick={() => handleServiceClick('Electricity Bill')}
+              amount={1121}
+            />
+            <DashboardItem
+              icon={GraduationCap}
+              label="Education"
+              color="bg-purple-500"
+              onClick={() => handleServiceClick('Education')}
+              amount={3141}
+            />
+            <DashboardItem
+              icon={BarChart2}
+              label="Statistics"
+              color="bg-gray-500"
+              onClick={() => handleServiceClick('Statistics')}
+            />
+            <DashboardItem
+              icon={Users}
+              label="Community"
+              color="bg-teal-500"
+              onClick={() => handleServiceClick('Community')}
+            />
+          </div>
+
+          <section className="mt-12 bg-white rounded-lg shadow-lg p-6">
+            <h2 className="text-xl font-semibold mb-4">Transaction History</h2>
+            <ResponsiveContainer width="100%" height={400}>
               <LineChart data={transactionHistory}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="date" />
                 <YAxis />
                 <Tooltip />
-                <Line type="monotone" dataKey="amount" stroke="#8884d8" activeDot={{ r: 8 }} />
+                <Line type="monotone" dataKey="amount" stroke="#8884d8" />
               </LineChart>
             </ResponsiveContainer>
-          </CardContent>
-        </Card>
-
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-semibold text-gray-800">Quick Actions</h2>
-          <div className="flex space-x-2">
-            <Button variant="outline" onClick={() => handleServiceClick('Add Money')}>
-              <Plus className="mr-2 h-4 w-4" /> Add Money
-            </Button>
-            <Button variant="outline" onClick={() => handleServiceClick('Contact Us')}>
-              <PhoneCall className="mr-2 h-4 w-4" /> Contact Us
-            </Button>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          <DashboardItem icon={Phone} label="Buy Airtime" color="bg-pink-500" onClick={() => handleServiceClick('Buy Airtime')} amount={1000} />
-          <DashboardItem icon={Wifi} label="Buy Data" color="bg-blue-500" onClick={() => handleServiceClick('Buy Data')} amount={2000} />
-          <DashboardItem icon={Tv} label="Cable TV" color="bg-green-500" onClick={() => handleServiceClick('Cable TV')} amount={3000} />
-          <DashboardItem icon={Zap} label="Electricity" color="bg-yellow-500" onClick={() => handleServiceClick('Electricity')} amount={1500} />
-          <DashboardItem icon={GraduationCap} label="Exam Pin" color="bg-purple-500" onClick={() => handleServiceClick('Exam Pin')} />
-          <DashboardItem icon={BarChart2} label="Stats" color="bg-red-500" onClick={() => handleServiceClick('Stats')} />
-          <DashboardItem icon={Users} label="Refer a Friend" color="bg-teal-500" onClick={() => handleServiceClick('Refer a Friend')} />
-        </div>
-
-        <Card className="mt-6">
-          <CardContent>
-            <h2 className="text-lg font-semibold mb-4">Recent Transactions</h2>
-            <div>
-              {transactionHistory.map((transaction, index) => (
-                <div key={index} className="flex justify-between items-center border-b pb-2">
-                  <div className="text-sm text-gray-600">{transaction.date}</div>
-                  <div className="font-semibold text-gray-800">₦{transaction.amount.toLocaleString()}</div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      </main>
+          </section>
+        </main>
+      </div>
     </div>
   );
 };
