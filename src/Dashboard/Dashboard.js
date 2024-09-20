@@ -3,6 +3,9 @@ import { Phone, Wifi, Tv, Zap, GraduationCap, BarChart2, Users, Plus, PhoneCall,
 import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Line } from 'recharts';
 import { auth } from '../components/Auth/firebase'; 
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
+import { Link } from 'react-router-dom';
+import Profile from './Profile'
+
 
 // Initialize Firestore
 const firestore = getFirestore();
@@ -73,12 +76,20 @@ const Sidebar = ({ onNavigate, isOpen, toggleSidebar }) => {
             <span>Home</span>
           </button>
         </li>
-        <li>
-          <button onClick={() => { onNavigate('profile'); toggleSidebar(); }} className="flex items-center space-x-2 text-gray-800 hover:bg-gray-100 p-2 rounded-md">
-            <User size={20} />
-            <span>Profile</span>
-          </button>
-        </li>
+        <Link to="/profile">
+  <li>
+    <button 
+      onClick={() => { 
+        onNavigate('Profile'); 
+        toggleSidebar(); 
+      }} 
+      className="flex items-center space-x-2 text-gray-800 hover:bg-gray-100 p-2 rounded-md"
+    >
+      <User size={20} />
+      <span>Profile</span>
+    </button>
+  </li>
+</Link>
         <li>
           <button onClick={() => { onNavigate('history'); toggleSidebar(); }} className="flex items-center space-x-2 text-gray-800 hover:bg-gray-100 p-2 rounded-md">
             <History size={20} />

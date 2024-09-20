@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom'; // Import the Link component
+import { Link } from 'react-router-dom'; 
 import HeroImage from '../Assets/mobile1.jpg';
 import Navbar from '../components/navbar';
 
