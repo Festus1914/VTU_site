@@ -4,7 +4,7 @@ import { ResponsiveContainer, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, L
 import { auth } from '../components/Auth/firebase'; 
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import { Link } from 'react-router-dom';
-import Profile from './Profile'
+import Data from '../Dashboard/Data'
 
 
 // Initialize Firestore
@@ -228,6 +228,7 @@ const Dashboard = () => {
           </Card>
 
           <div className="mt-8 grid grid-cols-2 md:grid-rows-2 lg:grid-cols-3 gap-6">
+          
             <DashboardItem icon={Wifi} label="Data Subscription" color="bg-blue-500" onClick={() => handleServiceClick('Data Subscription')} />
             <DashboardItem icon={Phone} label="Airtime Top-up" color="bg-green-500" onClick={() => handleServiceClick('Airtime Top-up')} />
             <DashboardItem icon={Tv} label="TV Subscription" color="bg-orange-500" onClick={() => handleServiceClick('TV Subscription')} />

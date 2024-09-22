@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
-import { User, Mail, Phone, MapPin, Link, Copy, ChevronRight } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { User, Mail, Phone, MapPin, Copy, ChevronRight } from 'lucide-react';
+import { auth, db } from '../components/Auth/firebase'; // Updated import
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 const ProfileComponent = () => {
   const [activeTab, setActiveTab] = useState('Profile');
@@ -9,32 +11,55 @@ const ProfileComponent = () => {
   const [oldPin, setOldPin] = useState('');
   const [newPin, setNewPin] = useState('');
   const [confirmPin, setConfirmPin] = useState('');
-  
-  const profileData = {
-    name: "John Doe",
-    email: "johndoe@example.com",
-    phone: "1234567890",
-    state: "California",
-    referralLink: "https://example.com/referral/1234567890"
-  };
+  const [profileData, setProfileData] = useState(null);
 
   const tabs = ['Profile', 'Password', 'Pin'];
 
-  const handlePasswordUpdate = () => {
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      const user = auth.currentUser;
+      if (user) {
+        const docRef = doc(db, 'users', user.uid); // Updated to db
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          setProfileData(docSnap.data());
+        } else {
+          console.log('No such document!');
+        }
+      }
+    };
+    fetchProfileData();
+  }, []);
+
+  const handlePasswordUpdate = async () => {
     if (newPassword === confirmPassword) {
-      console.log('Password updated successfully');
+      try {
+        await auth.currentUser.updatePassword(newPassword);
+        console.log('Password updated successfully');
+      } catch (error) {
+        console.error('Error updating password:', error);
+      }
     } else {
       console.error('New passwords do not match');
     }
   };
 
-  const handlePinUpdate = () => {
+  const handlePinUpdate = async () => {
     if (newPin === confirmPin) {
-      console.log('PIN updated successfully');
+      const user = auth.currentUser;
+      if (user) {
+        const docRef = doc(db, 'users', user.uid); // Updated to db
+        await setDoc(docRef, { pin: newPin }, { merge: true });
+        console.log('PIN updated successfully');
+      }
     } else {
       console.error('New PINs do not match');
     }
   };
+
+  if (!profileData) {
+    return <div>Loading...</div>; // Show loading state while fetching data
+  }
 
   return (
     <div className="w-full bg-gradient-to-br from-blue-50 to-indigo-100 p-4 sm:p-6 lg:p-8">

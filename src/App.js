@@ -14,6 +14,7 @@ import Forgot from './components/Auth/Forgot';
 import Dashboard from './Dashboard/Dashboard';
 import Profile from './Dashboard/Profile'; 
 import History from './Dashboard/History';
+import More from './Dashboard/More';
 import Sidebar from './Dashboard/Sidebar';
 
 function App() {
@@ -21,17 +22,23 @@ function App() {
     <Router>
       <div className="App">
         <Routes>
-          <Route path="/" element={<>
-            <Navbar />
-            <HeroSection />
-            <About />
-            <FeaturesSection />
-            <ServicesSection />
-            <ExploreSection />
-            <TestimonialCarousel />
-            <FAQ />
-            <Footer />
-          </>} />
+          {/* Public Routes */}
+          <Route 
+            path="/" 
+            element={
+              <>
+                <Navbar />
+                <HeroSection />
+                <About />
+                <FeaturesSection />
+                <ServicesSection />
+                <ExploreSection />
+                <TestimonialCarousel />
+                <FAQ />
+                <Footer />
+              </>
+            } 
+          />
           
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
@@ -39,23 +46,45 @@ function App() {
 
           {/* Dashboard Routes */}
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/profile" element={
-            <div className="flex">
-              <Sidebar /> {/* Sidebar on the left */}
-              
-              <div className="flex-1 flex justify-center items-center p-4">
-                <Profile /> {/* Profile content centered */}
+          
+          {/* Profile Page with Sidebar */}
+          <Route 
+            path="/profile" 
+            element={
+              <div className="flex">
+                <Sidebar /> {/* Sidebar on the left */}
+                <div className="flex-1 flex justify-center items-center p-4">
+                  <Profile /> {/* Profile content centered */}
+                </div>
               </div>
-            </div>
-          } />
-          <Route path="/history" element={
-      <div className="flex">
-        <Sidebar /> {/* Sidebar on the left */}
-        <div className="flex-1 flex items-center justify-center min-h-screen">
-          <History /> {/* History content centered */}
-        </div>
-      </div>
-    } />
+            } 
+          />
+
+          {/* History Page with Sidebar */}
+          <Route 
+            path="/history" 
+            element={
+              <div className="flex">
+                <Sidebar /> {/* Sidebar on the left */}
+                <div className="flex-1 flex items-center justify-center min-h-screen">
+                  <History /> {/* History content centered */}
+                </div>
+              </div>
+            } 
+          />
+
+          {/* More Page with Sidebar */}
+          <Route 
+            path="/more" 
+            element={
+              <div className="flex">
+                <Sidebar /> {/* Sidebar on the left */}
+                <div className="flex-1 flex items-center justify-center min-h-screen">
+                  <More /> {/* More content centered */}
+                </div>
+              </div>
+            } 
+          />
         </Routes>
       </div>
     </Router>
